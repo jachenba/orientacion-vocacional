@@ -1526,7 +1526,7 @@ Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, 
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: systemPrompt,
         messages: [{ role: 'user', content: `Aquí están las respuestas del cuestionario:\n\n${prompt}` }]
