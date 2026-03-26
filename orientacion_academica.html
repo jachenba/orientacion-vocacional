@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orienta+ · Tu Brújula Profesional</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,700;9..144,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1828;
+    --surface2: #231f35;
+    --accent: #ff6b35;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --text: #fffffe;
+    --muted: #a39db8;
+    --border: rgba(167,139,250,0.15);
+    --card: rgba(255,255,255,0.04);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 10%, rgba(167,139,250,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,107,53,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(52,211,153,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 48px 0 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 24px;
+  }
+
+  .logo-badge span { font-size: 16px; }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .progress-count {
+    font-size: 13px;
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* SECTION TABS */
+  .section-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+
+  .section-tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+    white-space: nowrap;
+    transition: all 0.3s;
+  }
+
+  .tab.active {
+    background: rgba(167,139,250,0.15);
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .tab.done {
+    background: rgba(52,211,153,0.1);
+    border-color: rgba(52,211,153,0.3);
+    color: var(--accent3);
+  }
+
+  .tab-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .question-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .question-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(255,107,53,0.1);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .question-section {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .question-text {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.4;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .option:hover { border-color: rgba(167,139,250,0.4); transform: translateX(3px); }
+  .option:hover .opt-letter { background: rgba(167,139,250,0.2); color: var(--accent2); }
+
+  .option.selected {
+    border-color: var(--accent2);
+    background: rgba(167,139,250,0.1);
+  }
+
+  .option.selected .opt-letter {
+    background: var(--accent2);
+    color: #0f0e17;
+  }
+
+  .opt-letter {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: all 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .opt-text { position: relative; z-index: 1; }
+
+  /* SCALE OPTIONS */
+  .scale-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .scale-opt {
+    flex: 1;
+    min-width: 48px;
+    padding: 12px 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .scale-opt .scale-num {
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+    color: var(--text);
+  }
+
+  .scale-opt:hover { border-color: rgba(167,139,250,0.4); }
+  .scale-opt.selected { border-color: var(--accent2); background: rgba(167,139,250,0.1); color: var(--accent2); }
+  .scale-opt.selected .scale-num { color: var(--accent2); }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* MULTI-SELECT */
+  .multi-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .multi-hint::before {
+    content: '◈';
+    color: var(--accent2);
+  }
+
+  /* NAV BUTTONS */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .btn {
+    padding: 13px 28px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), #7c3aed);
+    color: white;
+    box-shadow: 0 4px 24px rgba(167,139,250,0.25);
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(167,139,250,0.35); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), #dc2626);
+    color: white;
+    box-shadow: 0 4px 24px rgba(255,107,53,0.25);
+    padding: 14px 36px;
+    font-size: 1rem;
+  }
+
+  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,107,53,0.35); }
+
+  /* LOADING */
+  .loading-screen {
+    text-align: center;
+    padding: 60px 20px;
+    display: none;
+  }
+
+  .loading-screen.active { display: block; }
+
+  .loader {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+
+  .loader::before, .loader::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: spin 1.4s linear infinite;
+  }
+
+  .loader::before {
+    inset: 0;
+    border-top-color: var(--accent2);
+    border-right-color: var(--accent2);
+    animation-duration: 1s;
+  }
+
+  .loader::after {
+    inset: 6px;
+    border-top-color: var(--accent);
+    animation-direction: reverse;
+    animation-duration: 1.4s;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .loading-sub { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+
+  .loading-steps {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .loading-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 8px 16px;
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    opacity: 0.4;
+    transition: all 0.4s;
+  }
+
+  .loading-step.active { opacity: 1; color: var(--accent2); border-color: rgba(167,139,250,0.3); }
+  .loading-step.done { opacity: 1; color: var(--accent3); border-color: rgba(52,211,153,0.2); }
+
+  /* RESULT */
+  .result-screen { display: none; }
+  .result-screen.active { display: block; }
+
+  .result-hero {
+    text-align: center;
+    padding: 48px 0 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .result-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(167,139,250,0.2));
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 100px;
+    padding: 6px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .result-name {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+
+  .result-tagline {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .result-content {
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+
+  .result-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(12px);
+  }
+
+  .result-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .result-section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .icon-purple { background: rgba(167,139,250,0.15); }
+  .icon-orange { background: rgba(255,107,53,0.15); }
+  .icon-green { background: rgba(52,211,153,0.15); }
+  .icon-blue { background: rgba(96,165,250,0.15); }
+
+  .result-text {
+    color: rgba(255,255,254,0.8);
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  .result-text p { margin-bottom: 12px; }
+  .result-text p:last-child { margin-bottom: 0; }
+
+  .career-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .career-item {
+    padding: 12px 16px;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--accent2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .career-item::before { content: '→'; font-size: 12px; opacity: 0.6; }
+  .career-item:hover { background: rgba(167,139,250,0.15); transform: translateX(3px); }
+
+  .study-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .study-item {
+    padding: 12px 16px;
+    background: rgba(52,211,153,0.06);
+    border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--accent3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .study-item::before { content: '◦'; font-size: 14px; }
+
+  .strength-bar-wrap {
+    margin-bottom: 14px;
+  }
+
+  .strength-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: rgba(255,255,254,0.8);
+    font-weight: 500;
+  }
+
+  .strength-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.5s;
+    width: 0%;
+  }
+
+  .fill-purple { background: linear-gradient(90deg, var(--accent2), #7c3aed); }
+  .fill-orange { background: linear-gradient(90deg, var(--accent), #dc2626); }
+  .fill-green { background: linear-gradient(90deg, var(--accent3), #059669); }
+  .fill-blue { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+  .fill-yellow { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+
+  .tip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tip-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255,255,254,0.8);
+  }
+
+  .tip-num {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255,107,53,0.15);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .result-cta {
+    text-align: center;
+    padding: 40px 0 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+
+  .share-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .btn-outline {
+    padding: 10px 22px;
+    border-radius: 100px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* INTRO SCREEN */
+  .intro-screen { display: block; }
+  .intro-screen.hidden { display: none; }
+
+  .quiz-screen { display: none; }
+  .quiz-screen.active { display: block; }
+
+  .intro-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 36px 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .intro-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .intro-card-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+
+  .intro-card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .intro-card-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .intro-cta {
+    text-align: center;
+    padding: 12px 0 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .name-input-wrap {
+    margin: 28px 0 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+
+  .name-input {
+    width: 100%;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s;
+    backdrop-filter: blur(10px);
+  }
+
+  .name-input::placeholder { color: var(--muted); }
+  .name-input:focus { border-color: var(--accent2); }
+
+  .name-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* SECTION TRANSITION */
+  .section-divider {
+    text-align: center;
+    padding: 32px 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .section-divider h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .section-divider p { color: var(--muted); font-size: 0.9rem; }
+
+  .section-emoji { font-size: 36px; margin-bottom: 14px; display: block; }
+
+  /* ERROR */
+  .error-msg {
+    display: none;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: #f87171;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .error-msg.active { display: block; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HIGHLIGHT */
+  strong { color: var(--accent2); font-weight: 600; }
+  .hl-orange { color: var(--accent); font-weight: 600; }
+  .hl-green { color: var(--accent3); font-weight: 600; }
+
+  /* RESULT DIVIDER */
+  .section-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  /* MOBILE */
+  @media (max-width: 500px) {
+    .question-card { padding: 22px 18px; }
+    .career-grid, .study-grid { grid-template-columns: 1fr 1fr; }
+    .scale-opt { padding: 10px 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO SCREEN -->
+  <div class="intro-screen" id="introScreen">
+    <div class="header">
+      <div class="logo-badge"><span>🧭</span> Orienta+</div>
+      <h1>Descubre tu <em>camino</em><br>profesional</h1>
+      <p class="subtitle">Un cuestionario inteligente que analiza tus intereses, habilidades y valores para orientarte hacia los estudios y profesiones que más encajan contigo.</p>
+    </div>
+
+    <div class="intro-cards">
+      <div class="intro-card">
+        <span class="intro-card-icon">🎯</span>
+        <div class="intro-card-title">Personalizado</div>
+        <div class="intro-card-desc">Feedback único generado por IA basado en tus respuestas</div>
+      </div>
+      <div class="intro-card">
+        <span class="intro-card-icon">⚡</span>
+        <div class="intro-card-title">10–15 minutos</div>
+        <div class="intro-card-desc">30 preguntas en 6 bloques temáticos clave</div>
+      </div>
+      <div class="intro-card">
+        <span class="intro-card-icon">🔬</span>
+        <div class="intro-card-title">Basado en ciencia</div>
+        <div class="intro-card-desc">Modelo Holland + valores laborales + inteligencias múltiples</div>
+      </div>
+    </div>
+
+    <div class="name-input-wrap">
+      <label class="name-label" for="nameInput">¿Cómo te llamas?</label>
+      <input type="text" id="nameInput" class="name-input" placeholder="Escribe tu nombre…" maxlength="40">
+    </div>
+
+    <div class="intro-cta">
+      <button class="btn btn-accent" onclick="startQuiz()">Empezar el cuestionario →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="quiz-screen" id="quizScreen">
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label" id="progressLabel">Bloque 1 de 6</span>
+        <span class="progress-count" id="progressCount">0 / 30</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="section-tabs" id="sectionTabs"></div>
+
+    <div id="questionArea"></div>
+
+    <div class="nav" id="navButtons">
+      <button class="btn btn-ghost" id="btnBack" onclick="goBack()">← Anterior</button>
+      <button class="btn btn-primary" id="btnNext" onclick="goNext()" disabled>Siguiente →</button>
+    </div>
+
+    <div class="error-msg" id="errorMsg">Por favor, selecciona una respuesta antes de continuar.</div>
+  </div>
+
+  <!-- LOADING SCREEN -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader"></div>
+    <div class="loading-title">Analizando tu perfil…</div>
+    <div class="loading-sub">La IA está procesando tus respuestas para crear<br>un informe personalizado único para ti.</div>
+    <div class="loading-steps">
+      <div class="loading-step active" id="ls1">🧠 Identificando intereses dominantes</div>
+      <div class="loading-step" id="ls2">📊 Calculando tu perfil vocacional</div>
+      <div class="loading-step" id="ls3">🎓 Explorando opciones de estudios</div>
+      <div class="loading-step" id="ls4">💼 Mapeando trayectorias profesionales</div>
+      <div class="loading-step" id="ls5">✨ Redactando tu informe personalizado</div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="result-screen" id="resultScreen">
+    <div class="result-hero">
+      <div class="result-badge">📋 Tu informe vocacional</div>
+      <div class="result-name" id="resultName">¡Hola, !</div>
+      <div class="result-tagline">Esto es lo que hemos descubierto sobre ti</div>
+    </div>
+    <div class="result-content" id="resultContent"></div>
+    <div class="result-cta">
+      <button class="btn btn-accent" onclick="restartQuiz()">Repetir el cuestionario</button>
+      <div class="share-row">
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Imprimir informe</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SECTIONS = [
+  { id: 'intereses', label: 'Intereses', emoji: '🌱' },
+  { id: 'habilidades', label: 'Habilidades', emoji: '⚡' },
+  { id: 'valores', label: 'Valores', emoji: '💎' },
+  { id: 'entorno', label: 'Entorno', emoji: '🌍' },
+  { id: 'personalidad', label: 'Personalidad', emoji: '🧠' },
+  { id: 'futuro', label: 'Futuro', emoji: '🚀' },
+];
+
+const QUESTIONS = [
+  // ── BLOQUE 1: INTERESES ──
+  {
+    section: 0, type: 'scale', id: 'q1',
+    text: '¿Cuánto disfrutas resolviendo problemas de matemáticas, lógica o programación?',
+    labels: ['Nada', 'Mucho']
+  },
+  {
+    section: 0, type: 'scale', id: 'q2',
+    text: '¿Cuánto te interesan los fenómenos naturales, la biología, la química o la física?',
+    labels: ['Nada', 'Mucho']
+  },
+  {
+    section: 0, type: 'scale', id: 'q3',
+    text: '¿Con qué frecuencia te encuentras leyendo, escribiendo o creando contenido por iniciativa propia?',
+    labels: ['Nunca', 'Siempre']
+  },
+  {
+    section: 0, type: 'scale', id: 'q4',
+    text: '¿Te apasionan las artes: dibujo, música, cine, diseño, fotografía o moda?',
+    labels: ['Nada', 'Muchísimo']
+  },
+  {
+    section: 0, type: 'multi', id: 'q5',
+    text: 'Cuando tienes tiempo libre, ¿qué actividades haces con más frecuencia? (Selecciona todas las que se apliquen)',
+    options: [
+      'Jugar a videojuegos / programar / crear contenido digital',
+      'Leer, escribir o aprender sobre cultura e historia',
+      'Hacer deporte, actividades al aire libre o ejercicio físico',
+      'Dibujar, tocar un instrumento, diseñar o crear manualidades',
+      'Hablar con amigos, organizar planes, ayudar a otras personas',
+      'Ver documentales, investigar temas científicos o de actualidad',
+      'Cocinar, hacer manualidades o construir/reparar cosas',
+      'Reflexionar sobre temas filosóficos, sociales o de justicia',
+    ]
+  },
+
+  // ── BLOQUE 2: HABILIDADES ──
+  {
+    section: 1, type: 'scale', id: 'q6',
+    text: '¿Cómo valorarías tu facilidad para explicar cosas complejas a otras personas de forma clara?',
+    labels: ['Muy baja', 'Muy alta']
+  },
+  {
+    section: 1, type: 'scale', id: 'q7',
+    text: '¿Cómo es tu capacidad para concentrarte en tareas que requieren análisis detallado durante largo tiempo?',
+    labels: ['Muy baja', 'Muy alta']
+  },
+  {
+    section: 1, type: 'single', id: 'q8',
+    text: '¿En qué tipo de tareas te sientes más competente?',
+    options: [
+      'Tareas técnicas: cálculos, programación, ingeniería, mecánica',
+      'Tareas creativas: diseñar, inventar, narrar, imaginar',
+      'Tareas sociales: liderar, negociar, enseñar, cuidar personas',
+      'Tareas analíticas: investigar, organizar datos, escribir informes',
+    ]
+  },
+  {
+    section: 1, type: 'scale', id: 'q9',
+    text: '¿Cómo valorarías tu habilidad para trabajar en equipo y coordinar a otras personas?',
+    labels: ['Muy baja', 'Muy alta']
+  },
+  {
+    section: 1, type: 'single', id: 'q10',
+    text: 'Cuando hay un problema difícil, ¿cuál es tu primer instinto?',
+    options: [
+      'Buscar datos y analizarlos sistemáticamente',
+      'Hablar con otras personas para escuchar sus perspectivas',
+      'Experimentar y probar soluciones de forma práctica',
+      'Buscar una solución creativa o innovadora',
+      'Organizar y planificar los pasos a seguir',
+    ]
+  },
+
+  // ── BLOQUE 3: VALORES ──
+  {
+    section: 2, type: 'rank', id: 'q11',
+    text: 'Ordena estos aspectos del trabajo según su importancia para ti (del más al menos importante):',
+    options: [
+      'Salario alto y estabilidad económica',
+      'Impacto social: ayudar a otras personas o al planeta',
+      'Creatividad y libertad para expresarme',
+      'Reconocimiento y prestigio social',
+      'Flexibilidad horaria y conciliación personal',
+    ]
+  },
+  {
+    section: 2, type: 'single', id: 'q12',
+    text: 'Si pudieras elegir el entorno laboral ideal, ¿cuál sería?',
+    options: [
+      'Una empresa tecnológica o startup innovadora',
+      'Una ONG, entidad pública o institución educativa',
+      'Un estudio creativo, agencia o freelance',
+      'Un hospital, clínica o entorno sanitario',
+      'Un despacho, laboratorio o entorno de investigación',
+      'Trabajar al aire libre o en entornos físicos variados',
+    ]
+  },
+  {
+    section: 2, type: 'scale', id: 'q13',
+    text: '¿Qué importancia tiene para ti que tu trabajo contribuya directamente al bienestar de las personas?',
+    labels: ['Poca', 'Mucha']
+  },
+  {
+    section: 2, type: 'scale', id: 'q14',
+    text: '¿Cuánto valoras la seguridad y la estabilidad laboral frente al riesgo y la aventura profesional?',
+    labels: ['Aventura', 'Estabilidad']
+  },
+  {
+    section: 2, type: 'single', id: 'q15',
+    text: 'Imagina que tienes que elegir entre dos trabajos. ¿Cuál preferirías?',
+    options: [
+      'Bien pagado pero poco significativo para ti',
+      'Muy significativo pero con salario moderado',
+      'Tendría que encontrar un equilibrio entre ambos',
+    ]
+  },
+
+  // ── BLOQUE 4: ENTORNO Y ESTILO ──
+  {
+    section: 3, type: 'single', id: 'q16',
+    text: '¿Cómo prefieres organizar tu trabajo?',
+    options: [
+      'Con rutinas claras y estructura definida',
+      'Con mucha autonomía y sin horarios fijos',
+      'En proyectos variados con plazos concretos',
+      'Adaptándome según las necesidades de cada día',
+    ]
+  },
+  {
+    section: 3, type: 'single', id: 'q17',
+    text: '¿En qué tipo de proyectos disfrutas más participando?',
+    options: [
+      'Proyectos a largo plazo con investigación profunda',
+      'Proyectos rápidos y dinámicos con resultados inmediatos',
+      'Proyectos que implican contacto directo con personas',
+      'Proyectos técnicos o de construcción de algo concreto',
+      'Proyectos creativos donde tengo libertad artística',
+    ]
+  },
+  {
+    section: 3, type: 'scale', id: 'q18',
+    text: '¿Te atrae la posibilidad de trabajar en el extranjero o en proyectos internacionales?',
+    labels: ['Nada', 'Mucho']
+  },
+  {
+    section: 3, type: 'single', id: 'q19',
+    text: '¿Qué papel prefieres en un equipo de trabajo?',
+    options: [
+      'Líder: organizando y tomando decisiones',
+      'Experto técnico: siendo la referencia en mi área',
+      'Creativo: aportando ideas y soluciones originales',
+      'Colaborador: apoyando al equipo y facilitando el trabajo',
+      'Independiente: trabajo mejor en solitario',
+    ]
+  },
+  {
+    section: 3, type: 'multi', id: 'q20',
+    text: '¿Qué sectores te generan más curiosidad o admiración? (Selecciona los que quieras)',
+    options: [
+      'Tecnología e Inteligencia Artificial',
+      'Salud y ciencias de la vida',
+      'Educación y psicología',
+      'Arte, diseño y entretenimiento',
+      'Medio ambiente y sostenibilidad',
+      'Derecho, política y justicia social',
+      'Economía, negocios y emprendimiento',
+      'Ingeniería, arquitectura y construcción',
+      'Comunicación, periodismo y redes sociales',
+      'Ciencia e investigación',
+    ]
+  },
+
+  // ── BLOQUE 5: PERSONALIDAD ──
+  {
+    section: 4, type: 'scale', id: 'q21',
+    text: '¿Con qué frecuencia tomas la iniciativa sin esperar a que alguien te lo pida?',
+    labels: ['Raramente', 'Siempre']
+  },
+  {
+    section: 4, type: 'single', id: 'q22',
+    text: 'Ante una situación nueva o desconocida, tu reacción más habitual es:',
+    options: [
+      'Sentir curiosidad y lanzarte a explorarla',
+      'Observar primero y actuar cuando te sientes preparado/a',
+      'Buscar información antes de implicarte',
+      'Pedir opinión a personas de confianza',
+    ]
+  },
+  {
+    section: 4, type: 'scale', id: 'q23',
+    text: '¿Cómo te afectan emocionalmente las situaciones de presión o bajo stress?',
+    labels: ['Me bloquean', 'Me activan']
+  },
+  {
+    section: 4, type: 'single', id: 'q24',
+    text: 'Cuando cometes un error, ¿qué haces?',
+    options: [
+      'Me lo tomo muy en serio y tardo en recuperarme',
+      'Analizo qué salió mal y corrijo sin drama',
+      'Lo proceso, aprendo y sigo adelante rápido',
+      'Depende: a veces me afecta mucho, a veces no',
+    ]
+  },
+  {
+    section: 4, type: 'scale', id: 'q25',
+    text: '¿Con qué facilidad empatizas con el estado emocional de otras personas?',
+    labels: ['Poco', 'Mucho']
+  },
+
+  // ── BLOQUE 6: FUTURO Y EXPECTATIVAS ──
+  {
+    section: 5, type: 'single', id: 'q26',
+    text: '¿Tienes ya alguna idea de lo que quieres estudiar?',
+    options: [
+      'Sí, tengo muy claro lo que quiero',
+      'Tengo algunas opciones pero no me he decidido',
+      'Tengo dudas entre dos caminos muy distintos',
+      'No tengo ni idea y me genera bastante angustia',
+    ]
+  },
+  {
+    section: 5, type: 'multi', id: 'q27',
+    text: '¿Qué obstáculos sientes que tienes ante tu decisión vocacional? (Selecciona todos los que apliquen)',
+    options: [
+      'Miedo a elegir mal y arrepentirme',
+      'Presión familiar para estudiar algo concreto',
+      'No sé qué salidas profesionales tienen ciertas carreras',
+      'Tengo intereses en áreas muy distintas',
+      'Preocupación por el mercado laboral y el empleo',
+      'No creo tener suficientes aptitudes para lo que me gusta',
+      'El factor económico (coste de los estudios)',
+    ]
+  },
+  {
+    section: 5, type: 'single', id: 'q28',
+    text: '¿Qué tipo de estudios te planteas principalmente?',
+    options: [
+      'Grado universitario (4 años)',
+      'Ciclo Formativo de Grado Superior (FP)',
+      'Ambas opciones están sobre la mesa',
+      'Todavía no lo he pensado seriamente',
+    ]
+  },
+  {
+    section: 5, type: 'scale', id: 'q29',
+    text: '¿Cuánta importancia le das a la proyección internacional de tu carrera?',
+    labels: ['Ninguna', 'Fundamental']
+  },
+  {
+    section: 5, type: 'single', id: 'q30',
+    text: '¿Cómo te imaginas tu vida profesional dentro de 10 años?',
+    options: [
+      'Liderando equipos o siendo directivo/a en una empresa',
+      'Como experto/a referente en mi especialidad',
+      'Teniendo mi propio negocio o proyecto',
+      'Haciendo investigación o aportando al conocimiento',
+      'Trabajando en lo que me apasiona aunque no sea lo más lucrativo',
+      'Todavía no tengo una imagen clara',
+    ]
+  },
+];
+
+let currentQ = 0;
+let answers = {};
+let userName = '';
+let rankOrders = {};
+
+function startQuiz() {
+  userName = document.getElementById('nameInput').value.trim() || 'amigo/a';
+  document.getElementById('introScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.add('active');
+  buildTabs();
+  renderQuestion();
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('sectionTabs');
+  tabs.innerHTML = SECTIONS.map((s, i) =>
+    `<div class="tab" id="tab-${i}" data-section="${i}">${s.emoji} ${s.label}</div>`
+  ).join('');
+}
+
+function updateTabs() {
+  const currentSection = QUESTIONS[currentQ].section;
+  SECTIONS.forEach((_, i) => {
+    const el = document.getElementById(`tab-${i}`);
+    if (!el) return;
+    el.className = 'tab';
+    const sectionQs = QUESTIONS.filter(q => q.section === i);
+    const allAnswered = sectionQs.every(q => answers[q.id] !== undefined);
+    if (i < currentSection && allAnswered) el.classList.add('done');
+    else if (i === currentSection) el.classList.add('active');
+  });
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const total = QUESTIONS.length;
+  const pct = (answered / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${answered} / ${total}`;
+  const sec = QUESTIONS[currentQ].section;
+  document.getElementById('progressLabel').textContent = `Bloque ${sec + 1} de 6 — ${SECTIONS[sec].label}`;
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const area = document.getElementById('questionArea');
+  const btnNext = document.getElementById('btnNext');
+  const btnBack = document.getElementById('btnBack');
+  document.getElementById('errorMsg').classList.remove('active');
+
+  let html = `<div class="question-card" style="animation-delay:0s">
+    <div class="question-meta">
+      <span class="question-num">P${currentQ + 1}</span>
+      <span class="question-section">${SECTIONS[q.section].emoji} ${SECTIONS[q.section].label}</span>
+    </div>
+    <div class="question-text">${q.text}</div>`;
+
+  if (q.type === 'single') {
+    html += `<div class="options">`;
+    const letters = 'ABCDE';
+    q.options.forEach((opt, i) => {
+      const sel = answers[q.id] === i ? 'selected' : '';
+      html += `<button class="option ${sel}" onclick="selectSingle('${q.id}',${i})">
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt}</span>
+      </button>`;
+    });
+    html += `</div>`;
+
+  } else if (q.type === 'scale') {
+    html += `<div class="scale-options">`;
+    for (let i = 1; i <= 5; i++) {
+      const sel = answers[q.id] === i ? 'selected' : '';
+      const label = i === 1 ? q.labels[0] : i === 5 ? q.labels[1] : '';
+      html += `<button class="scale-opt ${sel}" onclick="selectScale('${q.id}',${i})">
+        <span class="scale-num">${i}</span>
+        ${label}
+      </button>`;
+    }
+    html += `</div>
+    <div class="scale-labels"><span>${q.labels[0]}</span><span>${q.labels[1]}</span></div>`;
+
+  } else if (q.type === 'multi') {
+    html += `<div class="multi-hint">Puedes seleccionar varias opciones</div><div class="options">`;
+    const letters = 'ABCDEFGHIJ';
+    q.options.forEach((opt, i) => {
+      const current = answers[q.id] || [];
+      const sel = current.includes(i) ? 'selected' : '';
+      html += `<button class="option ${sel}" onclick="selectMulti('${q.id}',${i},${q.options.length})">
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt}</span>
+      </button>`;
+    });
+    html += `</div>`;
+
+  } else if (q.type === 'rank') {
+    const order = rankOrders[q.id] || [...Array(q.options.length).keys()];
+    rankOrders[q.id] = order;
+    html += `<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Haz clic en las opciones en el orden de tu preferencia (primero el más importante)</div>
+    <div class="options" id="rankContainer">`;
+    order.forEach((idx, pos) => {
+      const selected = answers[q.id] && answers[q.id][pos] !== undefined;
+      const rankNum = answers[q.id] ? (answers[q.id].indexOf(idx) >= 0 ? answers[q.id].indexOf(idx) + 1 : '') : '';
+      html += `<button class="option ${rankNum ? 'selected' : ''}" style="justify-content:space-between" onclick="selectRank('${q.id}',${idx},${q.options.length})">
+        <span class="opt-text" style="flex:1">${q.options[idx]}</span>
+        ${rankNum ? `<span class="opt-letter" style="min-width:28px;text-align:center;background:var(--accent);color:#fff">${rankNum}</span>` : '<span class="opt-letter" style="opacity:0.3">–</span>'}
+      </button>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  area.innerHTML = html;
+
+  const hasAnswer = answers[q.id] !== undefined &&
+    (q.type !== 'multi' || (answers[q.id] && answers[q.id].length > 0)) &&
+    (q.type !== 'rank' || (answers[q.id] && answers[q.id].length === q.options.length));
+  btnNext.disabled = !hasAnswer;
+  btnBack.style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+  if (currentQ === QUESTIONS.length - 1) {
+    btnNext.textContent = 'Ver mi informe 🎉';
+  } else {
+    btnNext.textContent = 'Siguiente →';
+  }
+
+  updateProgress();
+  updateTabs();
+}
+
+function selectSingle(qid, val) {
+  answers[qid] = val;
+  renderQuestion();
+}
+
+function selectScale(qid, val) {
+  answers[qid] = val;
+  renderQuestion();
+}
+
+function selectMulti(qid, val) {
+  if (!answers[qid]) answers[qid] = [];
+  const idx = answers[qid].indexOf(val);
+  if (idx >= 0) answers[qid].splice(idx, 1);
+  else answers[qid].push(val);
+  if (answers[qid].length === 0) delete answers[qid];
+  renderQuestion();
+}
+
+function selectRank(qid, val, total) {
+  if (!answers[qid]) answers[qid] = [];
+  const existing = answers[qid].indexOf(val);
+  if (existing >= 0) {
+    answers[qid].splice(existing, 1);
+  } else if (answers[qid].length < total) {
+    answers[qid].push(val);
+  }
+  renderQuestion();
+}
+
+function goNext() {
+  const q = QUESTIONS[currentQ];
+  const hasAnswer = answers[q.id] !== undefined &&
+    (q.type !== 'multi' || (answers[q.id] && answers[q.id].length > 0)) &&
+    (q.type !== 'rank' || (answers[q.id] && answers[q.id].length === q.options.length));
+
+  if (!hasAnswer) {
+    document.getElementById('errorMsg').classList.add('active');
+    return;
+  }
+
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    submitQuiz();
+  }
+}
+
+function goBack() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ─── BUILD PROMPT ───────────────────────────────────────────────
+function buildPrompt() {
+  const lines = [];
+  lines.push(`Nombre del alumno/a: ${userName}`);
+  lines.push('');
+
+  QUESTIONS.forEach((q, i) => {
+    const a = answers[q.id];
+    let respStr = '';
+    if (q.type === 'single') {
+      respStr = q.options[a] || '—';
+    } else if (q.type === 'scale') {
+      respStr = `${a}/5 (${q.labels[0]}=1, ${q.labels[1]}=5)`;
+    } else if (q.type === 'multi') {
+      respStr = (a || []).map(idx => q.options[idx]).join(' | ');
+    } else if (q.type === 'rank') {
+      respStr = (a || []).map((idx, pos) => `${pos + 1}. ${q.options[idx]}`).join(' → ');
+    }
+    lines.push(`P${i + 1} [${SECTIONS[q.section].label}]: ${q.text}`);
+    lines.push(`→ Respuesta: ${respStr}`);
+    lines.push('');
+  });
+
+  return lines.join('\n');
+}
+
+// ─── SUBMIT & AI CALL ────────────────────────────────────────────
+async function submitQuiz() {
+  document.getElementById('quizScreen').classList.remove('active');
+  document.getElementById('loadingScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Animate loading steps
+  const steps = ['ls1','ls2','ls3','ls4','ls5'];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx > 0) {
+      document.getElementById(steps[stepIdx-1]).classList.remove('active');
+      document.getElementById(steps[stepIdx-1]).classList.add('done');
+    }
+    if (stepIdx < steps.length) {
+      document.getElementById(steps[stepIdx]).classList.add('active');
+      stepIdx++;
+    } else {
+      clearInterval(stepInterval);
+    }
+  }, 1800);
+
+  const prompt = buildPrompt();
+
+  const systemPrompt = `Eres un orientador académico y profesional experto, empático y motivador, especializado en jóvenes de 17-18 años en transición de bachillerato a la universidad o FP en España. 
+Recibirás las respuestas de un cuestionario de orientación vocacional y deberás generar un informe personalizado, exhaustivo y útil.
+
+Tu informe debe estar escrito en español, en tono cercano y motivador (tutea al alumno/a), y debe estructurarse EXACTAMENTE en estas secciones usando este formato JSON:
+
+{
+  "perfil_resumen": "Texto de 3-4 párrafos describiendo el perfil vocacional del alumno/a: quién es, cómo piensa, cómo trabaja, qué le mueve. Menciona su nombre. Muy personalizado.",
+  "areas_interes": [
+    { "nombre": "Nombre del área (ej: Tecnología e Ingeniería)", "porcentaje": 85, "descripcion": "Por qué encaja con sus respuestas, 2-3 frases." },
+    { "nombre": "...", "porcentaje": 72, "descripcion": "..." },
+    { "nombre": "...", "porcentaje": 65, "descripcion": "..." },
+    { "nombre": "...", "porcentaje": 55, "descripcion": "..." },
+    { "nombre": "...", "porcentaje": 40, "descripcion": "..." }
+  ],
+  "estudios_recomendados": [
+    "Nombre del grado/carrera/FP 1",
+    "Nombre del grado/carrera/FP 2",
+    "Nombre del grado/carrera/FP 3",
+    "Nombre del grado/carrera/FP 4",
+    "Nombre del grado/carrera/FP 5",
+    "Nombre del grado/carrera/FP 6",
+    "Nombre del grado/carrera/FP 7",
+    "Nombre del grado/carrera/FP 8"
+  ],
+  "profesiones_recomendadas": [
+    "Profesión 1",
+    "Profesión 2",
+    "Profesión 3",
+    "Profesión 4",
+    "Profesión 5",
+    "Profesión 6",
+    "Profesión 7",
+    "Profesión 8",
+    "Profesión 9",
+    "Profesión 10"
+  ],
+  "fortalezas": "Párrafo de 2-3 frases describiendo las fortalezas clave identificadas en el alumno/a.",
+  "areas_desarrollo": "Párrafo de 2-3 frases sobre áreas en las que podría crecer o trabajar para alcanzar sus objetivos.",
+  "consejos_personalizados": [
+    "Consejo específico y accionable número 1 (máx 2 frases)",
+    "Consejo específico y accionable número 2 (máx 2 frases)",
+    "Consejo específico y accionable número 3 (máx 2 frases)",
+    "Consejo específico y accionable número 4 (máx 2 frases)"
+  ],
+  "mensaje_final": "Párrafo final de cierre: motivador, honesto, personalizado. Menciona el nombre del alumno/a. 3-4 frases."
+}
+
+Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, sin comillas extra al inicio o final.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Aquí están las respuestas del cuestionario:\n\n${prompt}` }]
+      })
+    });
+
+    clearInterval(stepInterval);
+    steps.forEach(s => {
+      document.getElementById(s).classList.remove('active');
+      document.getElementById(s).classList.add('done');
+    });
+
+    const data = await response.json();
+    const raw = data.content[0].text;
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    setTimeout(() => {
+      showResult(result);
+    }, 600);
+
+  } catch (err) {
+    console.error(err);
+    clearInterval(stepInterval);
+    showFallbackResult();
+  }
+}
+
+function showResult(r) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  const rs = document.getElementById('resultScreen');
+  rs.classList.add('active');
+  document.getElementById('resultName').textContent = `✨ Tu perfil, ${userName}`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const colors = ['fill-purple','fill-orange','fill-green','fill-blue','fill-yellow'];
+
+  let html = '';
+
+  // 1. Perfil resumen
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-purple">🧬</div>
+      Tu perfil vocacional
+    </div>
+    <div class="result-text">${r.perfil_resumen.split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  </div>`;
+
+  // 2. Áreas de interés con barras
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-orange">📊</div>
+      Tus áreas de afinidad
+    </div>`;
+  (r.areas_interes || []).forEach((a, i) => {
+    html += `<div class="strength-bar-wrap">
+      <div class="strength-label"><span>${a.nombre}</span><span>${a.porcentaje}%</span></div>
+      <div class="strength-bar"><div class="strength-fill ${colors[i % colors.length]}" data-width="${a.porcentaje}"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:5px;">${a.descripcion}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // 3. Estudios recomendados
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-green">🎓</div>
+      Estudios que podrían encajarte
+    </div>
+    <div class="study-grid">`;
+  (r.estudios_recomendados || []).forEach(s => {
+    html += `<div class="study-item">${s}</div>`;
+  });
+  html += `</div></div>`;
+
+  // 4. Profesiones
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-blue">💼</div>
+      Profesiones que podrías explorar
+    </div>
+    <div class="career-grid">`;
+  (r.profesiones_recomendadas || []).forEach(p => {
+    html += `<div class="career-item">${p}</div>`;
+  });
+  html += `</div></div>`;
+
+  // 5. Fortalezas y desarrollo
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-purple">⭐</div>
+      Tus fortalezas
+    </div>
+    <div class="result-text"><p>${r.fortalezas}</p></div>
+    <div class="section-sep" style="margin:16px 0"></div>
+    <div class="result-section-title" style="margin-top:0">
+      <div class="result-section-icon icon-orange">🌱</div>
+      Áreas de desarrollo
+    </div>
+    <div class="result-text"><p>${r.areas_desarrollo}</p></div>
+  </div>`;
+
+  // 6. Consejos
+  html += `<div class="result-section">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-green">💡</div>
+      Consejos personalizados para ti
+    </div>
+    <div class="tip-list">`;
+  (r.consejos_personalizados || []).forEach((c, i) => {
+    html += `<div class="tip-item"><div class="tip-num">${i + 1}</div><div>${c}</div></div>`;
+  });
+  html += `</div></div>`;
+
+  // 7. Mensaje final
+  html += `<div class="result-section" style="border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.04)">
+    <div class="result-section-title">
+      <div class="result-section-icon icon-orange">🚀</div>
+      Un último mensaje para ti
+    </div>
+    <div class="result-text" style="font-size:1rem;line-height:1.8"><p>${r.mensaje_final}</p></div>
+  </div>`;
+
+  document.getElementById('resultContent').innerHTML = html;
+
+  // Animate bars
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.strength-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    });
+  });
+}
+
+function showFallbackResult() {
+  const fallback = {
+    perfil_resumen: `Gracias por completar el cuestionario, ${userName}. Aunque en este momento no ha sido posible conectar con el servicio de análisis, tus respuestas revelan un perfil rico e interesante. Recuerda guardar tus respuestas y compartirlas con tu orientador/a de referencia para una sesión de feedback personalizado.\n\nTu disposición a reflexionar sobre tus intereses y valores es ya el primer paso hacia una decisión vocacional más consciente.`,
+    areas_interes: [
+      { nombre: 'Tecnología y Ciencias', porcentaje: 75, descripcion: 'Refleja interés en análisis y resolución de problemas.' },
+      { nombre: 'Humanidades y Comunicación', porcentaje: 65, descripcion: 'Capacidad para expresar y conectar con los demás.' },
+      { nombre: 'Ciencias Sociales', porcentaje: 60, descripcion: 'Sensibilidad hacia el entorno humano y social.' },
+      { nombre: 'Artes y Creatividad', porcentaje: 55, descripcion: 'Apreciación por la expresión artística.' },
+      { nombre: 'Ciencias de la Salud', porcentaje: 45, descripcion: 'Interés en el bienestar humano.' },
+    ],
+    estudios_recomendados: ['Psicología','Ingeniería Informática','Comunicación y Periodismo','Biología','ADE','Diseño Gráfico','Derecho','Magisterio'],
+    profesiones_recomendadas: ['Psicólogo/a','Desarrollador/a de software','Periodista','Diseñador/a UX','Maestro/a','Investigador/a','Consultor/a','Gestor/a cultural','Biólogo/a','Emprendedor/a'],
+    fortalezas: 'Muestras capacidad reflexiva y voluntad de conocerte mejor, lo cual es una fortaleza fundamental en cualquier trayectoria profesional.',
+    areas_desarrollo: 'Trabajar la tolerancia a la incertidumbre y la toma de decisiones puede ayudarte a afrontar este momento de transición con mayor confianza.',
+    consejos_personalizados: [
+      'Habla con profesionales de los campos que te interesan: un café con alguien del sector vale más que horas leyendo.',
+      'Visita las jornadas de puertas abiertas de universidades y ciclos formativos antes de decidir.',
+      'No presiones: elegir "perfectamente" no existe. Lo importante es elegir con información y autoconocimiento.',
+      'Usa herramientas como el portal universitario de tu comunidad autónoma para comparar salidas laborales reales.',
+    ],
+    mensaje_final: `${userName}, el hecho de que hayas llegado hasta aquí y hayas dedicado tiempo a reflexionar sobre ti mismo/a dice mucho de tu madurez. La elección vocacional no es un examen que aprobar o suspender; es el comienzo de una conversación contigo mismo/a que durará toda la vida. Confía en el proceso.`
+  };
+  showResult(fallback);
+}
+
+function restartQuiz() {
+  answers = {};
+  rankOrders = {};
+  currentQ = 0;
+  userName = '';
+  document.getElementById('resultScreen').classList.remove('active');
+  document.getElementById('introScreen').classList.remove('hidden');
+  document.getElementById('nameInput').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
