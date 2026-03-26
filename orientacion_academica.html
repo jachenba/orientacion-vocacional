@@ -1519,10 +1519,12 @@ Tu informe debe estar escrito en español, en tono cercano y motivador (tutea al
 
 Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, sin comillas extra al inicio o final.`;
 
+  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwQwoErM6skj0VA8ZpGp7WeIRWor4NuAoaly9ZTl3cPCi6BfO0_PM6f-pRgEAZUBKZT/exec';
+
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(PROXY_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
