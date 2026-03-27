@@ -1539,8 +1539,17 @@ Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, 
       document.getElementById(s).classList.add('done');
     });
 
-    const data = await response.json();
-    const raw = data.content[0].text;
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { throw new Error('Respuesta no válida: ' + text.slice(0,200)); }
+    let raw = '';
+    if (data.content && data.content[0] && data.content[0].text) {
+      raw = data.content[0].text;
+    } else if (typeof data === 'string') {
+      raw = data;
+    } else {
+      throw new Error('Formato inesperado: ' + JSON.stringify(data).slice(0,200));
+    }
     const clean = raw.replace(/```json|```/g, '').trim();
     const result = JSON.parse(clean);
 
