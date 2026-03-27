@@ -1551,8 +1551,11 @@ Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, 
     let data;
     try { data = JSON.parse(text); } catch(e) { throw new Error('Respuesta no válida: ' + text.slice(0,200)); }
     let raw = '';
-    // Formato Groq (OpenAI compatible)
-    if (data.choices && data.choices[0] && data.choices[0].message) {
+    // Formato simplificado del proxy (Apps Script)
+    if (data.result) {
+      raw = data.result;
+    // Formato Groq directo (por compatibilidad)
+    } else if (data.choices && data.choices[0] && data.choices[0].message) {
       raw = data.choices[0].message.content;
     // Formato Anthropic (por compatibilidad)
     } else if (data.content && data.content[0] && data.content[0].text) {
