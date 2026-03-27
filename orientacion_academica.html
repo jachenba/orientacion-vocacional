@@ -1470,8 +1470,16 @@ async function submitQuiz() {
 
   const prompt = buildPrompt();
 
-  const systemPrompt = `Eres un orientador académico y profesional experto, empático y motivador, especializado en jóvenes de 17-18 años en transición de bachillerato a la universidad o FP en España. 
-Recibirás las respuestas de un cuestionario de orientación vocacional y deberás generar un informe personalizado, exhaustivo y útil.
+  const systemPrompt = `Eres un orientador académico y profesional experto, empático y motivador, especializado en jóvenes de 17-18 años en transición de bachillerato a la universidad o FP en España.
+Recibirás las respuestas de un cuestionario de orientación vocacional y deberás generar un informe COMPLETAMENTE PERSONALIZADO basado ÚNICA Y EXCLUSIVAMENTE en las respuestas concretas del alumno/a.
+
+REGLAS CRÍTICAS DE PERSONALIZACIÓN:
+- Cada informe debe ser RADICALMENTE DISTINTO según las respuestas. Dos alumnos con respuestas distintas deben recibir informes distintos.
+- Lee con atención CADA respuesta antes de escribir. Las áreas de interés, porcentajes, carreras y profesiones deben derivarse DIRECTAMENTE de lo que el alumno respondió.
+- Si el alumno mostró interés por la tecnología (puntuaciones altas en P1), sus carreras recomendadas deben incluir informática, ingeniería, etc. Si mostró interés por las personas (P9 alta, P13 alta), deben aparecer psicología, educación, trabajo social, etc.
+- Los porcentajes de las áreas de afinidad deben reflejar las puntuaciones reales del alumno, no ser inventados. Un alumno con P1=5 y P2=1 debe tener Tecnología muy por encima de Ciencias Naturales.
+- NUNCA uses frases genéricas como "tus respuestas revelan un perfil rico e interesante". Sé específico: menciona respuestas concretas.
+- El perfil_resumen debe mencionar detalles concretos: qué actividades de ocio eligió, qué valores priorizó, qué obstáculos señaló, cómo se ve en 10 años.
 
 Tu informe debe estar escrito en español, en tono cercano y motivador (tutea al alumno/a), y debe estructurarse EXACTAMENTE en estas secciones usando este formato JSON:
 
@@ -1527,7 +1535,7 @@ Responde ÚNICAMENTE con el JSON válido, sin texto adicional, sin comentarios, 
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
+        max_tokens: 3000,
         system: systemPrompt,
         messages: [{ role: 'user', content: `Aquí están las respuestas del cuestionario:\n\n${prompt}` }]
       })
@@ -1672,26 +1680,61 @@ function showResult(r) {
 }
 
 function showFallbackResult() {
+  // Generar fallback basado en las respuestas reales del alumno
+  const q1 = answers['q1'] || 3; // matemáticas/tecnología
+  const q2 = answers['q2'] || 3; // ciencias naturales
+  const q3 = answers['q3'] || 3; // lectura/escritura
+  const q4 = answers['q4'] || 3; // artes
+  const q9 = answers['q9'] || 3; // trabajo en equipo
+  const q13 = answers['q13'] || 3; // ayudar a personas
+  const q25 = answers['q25'] || 3; // empatía
+
+  const techScore = Math.round((q1 / 5) * 100);
+  const sciScore = Math.round((q2 / 5) * 100);
+  const humanScore = Math.round((q3 / 5) * 100);
+  const artScore = Math.round((q4 / 5) * 100);
+  const socialScore = Math.round(((q9 + q13 + q25) / 15) * 100);
+
+  const areas = [
+    { nombre: 'Tecnología e Ingeniería', porcentaje: techScore, descripcion: 'Basado en tu interés por la lógica y resolución de problemas.' },
+    { nombre: 'Ciencias y Naturaleza', porcentaje: sciScore, descripcion: 'Refleja tu curiosidad por los fenómenos naturales.' },
+    { nombre: 'Humanidades y Comunicación', porcentaje: humanScore, descripcion: 'Tu afinidad con la lectura, escritura y expresión.' },
+    { nombre: 'Artes y Creatividad', porcentaje: artScore, descripcion: 'Tu inclinación hacia la expresión artística y el diseño.' },
+    { nombre: 'Ciencias Sociales y Salud', porcentaje: socialScore, descripcion: 'Tu orientación hacia las personas y el trabajo en equipo.' },
+  ].sort((a, b) => b.porcentaje - a.porcentaje);
+
+  const topArea = areas[0].nombre;
+  let estudios = [];
+  let profesiones = [];
+
+  if (techScore >= socialScore && techScore >= humanScore) {
+    estudios = ['Ingeniería Informática','Ingeniería Industrial','Matemáticas','Física','Telecomunicaciones','Ciberseguridad','Robótica e IA','FP Desarrollo de Aplicaciones Web'];
+    profesiones = ['Desarrollador/a de software','Ingeniero/a de datos','Analista de sistemas','Investigador/a tecnológico','Arquitecto/a de software','Especialista en IA','Ingeniero/a de redes','Emprendedor/a tech'];
+  } else if (socialScore >= techScore && socialScore >= artScore) {
+    estudios = ['Psicología','Trabajo Social','Educación Primaria','Enfermería','Medicina','Pedagogía','Logopedia','FP Integración Social'];
+    profesiones = ['Psicólogo/a','Educador/a social','Maestro/a','Enfermero/a','Orientador/a','Trabajador/a social','Terapeuta ocupacional','Coach'];
+  } else if (artScore >= techScore && artScore >= socialScore) {
+    estudios = ['Bellas Artes','Diseño Gráfico','Arquitectura','Comunicación Audiovisual','Publicidad','Moda','Animación Digital','FP Diseño Web'];
+    profesiones = ['Diseñador/a gráfico','Artista digital','Arquitecto/a','Publicista','Fotógrafo/a','Ilustrador/a','Director/a de arte','Creador/a de contenido'];
+  } else {
+    estudios = ['Periodismo','Filología','Historia','Filosofía','Traducción e Interpretación','Comunicación','Derecho','Relaciones Internacionales'];
+    profesiones = ['Periodista','Escritor/a','Historiador/a','Traductor/a','Abogado/a','Diplomático/a','Gestor/a cultural','Profesor/a'];
+  }
+
   const fallback = {
-    perfil_resumen: `Gracias por completar el cuestionario, ${userName}. Aunque en este momento no ha sido posible conectar con el servicio de análisis, tus respuestas revelan un perfil rico e interesante. Recuerda guardar tus respuestas y compartirlas con tu orientador/a de referencia para una sesión de feedback personalizado.\n\nTu disposición a reflexionar sobre tus intereses y valores es ya el primer paso hacia una decisión vocacional más consciente.`,
-    areas_interes: [
-      { nombre: 'Tecnología y Ciencias', porcentaje: 75, descripcion: 'Refleja interés en análisis y resolución de problemas.' },
-      { nombre: 'Humanidades y Comunicación', porcentaje: 65, descripcion: 'Capacidad para expresar y conectar con los demás.' },
-      { nombre: 'Ciencias Sociales', porcentaje: 60, descripcion: 'Sensibilidad hacia el entorno humano y social.' },
-      { nombre: 'Artes y Creatividad', porcentaje: 55, descripcion: 'Apreciación por la expresión artística.' },
-      { nombre: 'Ciencias de la Salud', porcentaje: 45, descripcion: 'Interés en el bienestar humano.' },
-    ],
-    estudios_recomendados: ['Psicología','Ingeniería Informática','Comunicación y Periodismo','Biología','ADE','Diseño Gráfico','Derecho','Magisterio'],
-    profesiones_recomendadas: ['Psicólogo/a','Desarrollador/a de software','Periodista','Diseñador/a UX','Maestro/a','Investigador/a','Consultor/a','Gestor/a cultural','Biólogo/a','Emprendedor/a'],
-    fortalezas: 'Muestras capacidad reflexiva y voluntad de conocerte mejor, lo cual es una fortaleza fundamental en cualquier trayectoria profesional.',
-    areas_desarrollo: 'Trabajar la tolerancia a la incertidumbre y la toma de decisiones puede ayudarte a afrontar este momento de transición con mayor confianza.',
+    perfil_resumen: `${userName}, hemos analizado tus respuestas y aquí tienes un primer avance de tu perfil. Tu área de mayor afinidad es ${topArea}, lo que orienta tus recomendaciones en esa dirección. Ten en cuenta que este es un informe aproximado — habla con tu orientador/a para profundizar en los resultados.`,
+    areas_interes: areas,
+    estudios_recomendados: estudios,
+    profesiones_recomendadas: profesiones,
+    fortalezas: 'Has completado el cuestionario con detalle y reflexión, lo que indica madurez y capacidad de autoconocimiento — dos cualidades esenciales para tomar buenas decisiones vocacionales.',
+    areas_desarrollo: 'Sigue explorando las áreas que más te han llamado la atención. Cuanta más información tengas sobre cada salida profesional, más segura será tu elección.',
     consejos_personalizados: [
-      'Habla con profesionales de los campos que te interesan: un café con alguien del sector vale más que horas leyendo.',
-      'Visita las jornadas de puertas abiertas de universidades y ciclos formativos antes de decidir.',
-      'No presiones: elegir "perfectamente" no existe. Lo importante es elegir con información y autoconocimiento.',
-      'Usa herramientas como el portal universitario de tu comunidad autónoma para comparar salidas laborales reales.',
+      'Habla con profesionales de los campos que más te interesan: una conversación real vale más que horas leyendo.',
+      'Visita jornadas de puertas abiertas de universidades y ciclos formativos para ver los entornos en persona.',
+      'No existe la elección perfecta — existe la elección informada. Investiga salidas laborales reales de cada carrera.',
+      'Usa el portal de tu comunidad autónoma para comparar notas de corte, salidas y tasas de empleo.',
     ],
-    mensaje_final: `${userName}, el hecho de que hayas llegado hasta aquí y hayas dedicado tiempo a reflexionar sobre ti mismo/a dice mucho de tu madurez. La elección vocacional no es un examen que aprobar o suspender; es el comienzo de una conversación contigo mismo/a que durará toda la vida. Confía en el proceso.`
+    mensaje_final: `${userName}, el hecho de haberte parado a reflexionar sobre ti mismo/a ya te pone por delante. La orientación vocacional no es un destino, es un proceso — y tú ya has dado el primer paso. ¡Mucho ánimo!`
   };
   showResult(fallback);
 }
